@@ -1,0 +1,7 @@
+[local]
+localhost
+
+[consul]
+#IP_ADDRESS
+#IP_ADDRESS
+#IP_ADDRESS

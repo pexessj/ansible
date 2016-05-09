@@ -1,0 +1,22 @@
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+
+    - name: Provision Bastion Instance for Consul-Vault environment
+      ec2_access_key: ""
+      ec2_secret_key: ""
+      ec2:
+        key_name: <KEY_PAIR_NAME>
+        instance_type: t2.nano
+        image: ami-f5f41398
+        region: us-east-1a
+        vpc_subnet_id: <SUBNET_ID>
+        wait: true
+        exact_count: 1
+        count_tag:
+          Name: bastion
+        instance_tags:
+          Name: bastion
+        assign_public_ip: yes

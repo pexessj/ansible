@@ -1,0 +1,36 @@
+###################
+# Create a New VPC
+###################
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Create a new VPC on AWS
+      ec2_vpc:
+        state: present
+        cidr_block: 172.32.0.0/16
+        subnets:
+          - cidr: 172.32.0.0/24
+            az: us-east-1a
+            resource_tags: { "Environment":"Consul" }
+          - cidr: 172.32.1.0/24
+            az: us-east-1b
+            resource_tags: { "Environment":"Consul" }
+          - cidr: 172.32.2.0/24
+            az: us-east-1d
+            resource_tags: { "Environment":"Consul" }
+          - cidr: 172.32.3.0/24
+            az: us-east-1e
+            resource_tags: { "Environment":"Consul" }
+        internet_gateway: True
+        route_tables:
+          - subnets:
+              - 172.32.0.0/24
+              - 172.32.1.0/24
+              - 172.32.2.0/24
+              - 172.32.3.0/24
+            routes:
+              - dest: 0.0.0.0/0
+                gw: igw
+        region: us-east-1
+      register: vpc

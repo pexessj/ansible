@@ -1,0 +1,28 @@
+---
+# tasks file for consul
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
+
+- name: Install required software
+  apt: name={{ item }} state=present
+  sudo: yes
+  with_items:
+    - supervisor
+    - rsyslog
+
+- name: Create directories
+  file: path=/opt/consul/consul.d/ owner=root group=root state=directory mode=0755
+  file: path=/opt/consul/logs/ owner=syslog group=root state=directory mode=0644
+
+- name: Download Consul 0.6.4
+  get_url: url=https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip validate_certs=no dest=/opt/consul/consul_0.6.4_linux_amd64.zip
+
+- name: Unzip Consul
+  unarchive: src=/opt/consul/consul_0.6.4_linux_amd64.zip dest=/opt/consul/ copy=no
+  sudo: yes
+
+- name: Create symlink to Consul in /sbin directory
+  file: src=/opt/consul/consul dest=/sbin/consul state=link
+#  notify: supervisor restart
+
